@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>WE</title>
+        <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: "Microsoft YaHei";
+            }
+
+            html,
+            body {
+                width: 100%;
+                height: 100%;
+                background: url('./img/background_image.png') no-repeat center center;
+                background-size: 100% 100%;
+            }
+
+            #box {
+                display: flex;
+                flex-wrap: wrap;
+            }
+
+            .itembox {
+                overflow: hidden;
+            }
+
+            .item {
+                width: 94%;
+                margin: 0 auto;
+                background-color: #20386A;
+                height: 94%;
+                border-radius: 5px;
+                margin-top: 3%;
+                position: relative;
+                display: flex;
+                align-items: center
+            }
+
+            .teamno {
+                font-size: 70px;
+                font-weight: 900;
+                position: absolute;
+                bottom: 0;
+                text-align: center;
+                width: 100%;
+                color: #FBF529
+            }
+
+            .relayno {
+                font-size: 20px;
+                width: 35px;
+                height: 25px;
+                background-color: #FBF529;
+                color: #20386A;
+                line-height: 25px;
+                position: absolute;
+                right: 5px;
+                top: 5px;
+                text-align: center;
+                font-weight: 900;
+                border-radius: 4px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="box">
+            <div class="itembox" v-for="(group,index) in groupList" :key="index">
+                <div :id=`${group.nationality}${group.relayTeamNo}` class="item">
+                    <p class="relayno">{{group.relayNo}}</p>
+                    <p class="teamno">{{group.no.length==2?'0'+group.no.slice(0,1):group.no.slice(0,2)}}</p>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <script>
+        var baseUrl = "http://120.79.142.200:8080/"
+        let scwidth = window.screen.width
+        let scheight = window.screen.height
+        $('.itembox').width(scwidth / 8)
+        $('.itembox').height(scheight / 6)
+        var app = new Vue({
+            el: '#box',
+            data: {
+                allPeopleList: [],
+                currentGameId: '',
+                currentGameItemId: '',
+                crrrentGroupId: '',
+                windowIndent: '',
+                groupList: [],
+                websocket: null,
+                id: 1
+            },
+            async mounted() {
+                const requestObj = this.getRequest()
+                this.currentGameId = '08144ec87982492e83f2e5f32d0073ff' //requestObj.currentGameId
+                this.currentGameItemId = '0610c7f70fc8429ca35ce0dd4d2e999f' // requestObj.currentGameItemId
+                this.crrrentGroupId = '82453935776944439ce7e4c52240368a' // requestObj.crrrentGroupId
+                this.windowIndent = '08144ec87982492e83f2e5f32d0073ff0610c7f70fc8429ca35ce0dd4d2e999f82453935776944439ce7e4c52240368a' 
+                //this.currentGameId + this.currentGameItemId + this.crrrentGroupId
+                await this.getMan(this.currentGameId, this.currentGameItemId, this.crrrentGroupId)
+                this.getWebsocket()
+            },
+            methods: {
+                getMan(competitionId, competitionItemId, groupId) { //获取人员
+                    const that = this
+                    $.ajax({ //获取人员
+                        url: baseUrl + 'along/CrossSportsmanController/findListAndPostBack',
+                        type: 'POST',
+                        async: false,
+                        // contentType:'application/json;charset=UTF-8;',
+                        data: {
+                            competitionId: competitionId, //赛事id
+                            competitionItemId: competitionItemId, //赛项id
+                            groupId: groupId, //组别id
+                        },
+                        success(res) {
+                            console.log(res)
+                            if (res.status == 1) {
+                                that.groupList = []
+                                let  data = res.data
+                                that.allPeopleList = data
+                                that.groupList = data.filter((item) => {
+                                    return item.relayNo == 1
+                                })
+                                that.groupList.sort(that.compare('no'))
+                                // console.log(that.groupList)
+                            } else {
+                                alert('网络连接错误，请稍后重试！')
+                            }
+                        }
+                    })
+                },
+                compare(property) {
+                        return function (a, b) {
+                            var value1 = a[property];
+                            var value2 = b[property];
+                            return value1 - value2;
+                        }
+                    },
+                //获取请求参数
+                getRequest() {
+                    var url = location.search; //获取url中"?"符后的字串
+                    var theRequest = new Object();
+                    if (url.indexOf("?") != -1) {
+                        var str = url.substr(1);
+                        strs = str.split("&");
+                        for (var i = 0; i < strs.length; i++) {
+                            theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+                        }
+                    }
+                    return theRequest;
+                },
+
+                //websocket
+                getWebsocket() {
+                    let that = this
+                    //webSocket处理
+                    var websocket = null;
+                    //判断当前浏览器是否支持WebSocket
+                    if ('WebSocket' in window) {
+                        var url = baseUrl.replace("http", "ws") + "websocket/" + that.windowIndent; 
+                        websocket = new WebSocket(url);
+                    } else {
+                        alert('Not support websocket')
+                    }
+
+                    //连接发生错误的回调方法
+                    websocket.onerror = function () {
+                        console.log("webSocket_Err")
+                    };
+
+                    //连接成功建立的回调方法
+                    websocket.onopen = function (event) {
+                        console.log("open")
+                    }
+                    websocket.onmessage = function (event) {
+                        // console.log(JSON.parse(event.data))
+                        const theData = JSON.parse(event.data)
+                        const {
+                            pointBack,
+                            sportsman
+                        } = theData
+                        // console.log(that.allPeopleList)
+                        that.allPeopleList.forEach(item => {
+                            if (item.id == sportsman.id) {
+                                if (item.line.pointList[item.line.pointList.length-3].pointNo == pointBack.pointNo) {
+                                    that.changeStyle(item.nationality + item.relayTeamNo,sportsman.relayNo)
+                                }
+                                return
+                            }
+                        });
+
+                    }
+                    //连接关闭的回调方法
+                    websocket.onclose = function () {
+                        console.log("close")
+                    }
+                    //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+                    window.onbeforeunload = function () {
+                        websocket.close();
+                    }
+
+                    //关闭连接
+                    function closeWebSocket() {
+                        websocket.close();
+                    }
+                },
+
+                //改变样式
+                changeStyle(id,therelayno) {
+                    // let relaynohtml = +$(`#${id} .relayno`).html()
+                    let theno = therelayno
+                    let relayno = (theno >= 2) ? 2 : theno
+                    relayno++
+                    $(`#${id} .relayno`).html(relayno)
+                    $(`#${id}`).css('background-color', '#D44A00')
+                    $(`#${id} .relayno`).css({
+                        'background-color': '#FFF3ED',
+                        'color': '#D44A00'
+                    })
+                    $(`#${id} .teamno`).css('color', '#FFF3ED')
+                    setTimeout(() => {
+                        $(`#${id}`).css('background-color', '#20386A')
+                        $(`#${id} .relayno`).css({
+                            'background-color': '#FBF529',
+                            'color': '#20386A'
+                        })
+                        $(`#${id} .teamno`).css('color', '#FBF529')
+                    }, 300000)
+                }
+            }
+        })
+    </script>
+
+</html>

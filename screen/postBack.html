@@ -1,0 +1,1683 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>中间点回传</title>
+        <link rel="stylesheet" href="./common.css">
+        <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    </head>
+    <style>
+        body,
+        html {
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            font-size: 14px
+        }
+        .post_back {
+            background-color: #fff;
+        }
+        .header {
+            width: 100%;
+            height: 70px;
+            background-color: #B5D4F4;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            font-size: 16px;
+            position: relative;
+        }
+        .header>div>select {
+            width: 200px;
+            height: 35px;
+            border-radius: 4px;
+            padding-left: 10px;
+            /* -webkit-appearance: none;   
+        -moz-appearance: none;  
+        appearance: none;        */
+        }
+        .cont_one {
+            width: 1200px;
+            margin: 0 auto;
+            /* margin-top: 30px; */
+            /* background-color: #b6d5f4; */
+            border-radius: 8px
+        }
+        .cont_all {
+            width: 100%;
+            margin-top: 30px;
+            /* background-color: #b6d5f4; */
+        }
+        .cont_head {
+            padding-left: 120px;
+            background: #F0F7FF;
+            padding: 0px 120px;
+            position: relative;
+            z-index: 100;
+            height: 80px;
+            padding-top: 15px
+        }
+        .cont_all>.cont_head {
+            padding: 0px 60px;
+            background: #F0F7FF;
+            font-size: 16px;
+            position: relative;
+            z-index: 100;
+            height: 80px;
+            padding-top: 15px
+        }
+        .cont_head>p:nth-child(1) {
+            font-style: italic;
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 16px
+        }
+        .title,
+        .title1 {
+            /* padding: 0 50px; */
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-align: center;
+            align-items: flex-end;
+            font-size: 18px;
+            /* background-color: rgba(255,255,255,0.3); */
+            font-weight: 800;
+            padding-bottom: 8px;
+            position: relative;
+            z-index: 100;
+            background-color: #b6d5f4;
+        }
+        .title p {
+            /* min-width: 120px; */
+            margin-right: 20px;
+            flex: 1
+        }
+        .title div {
+            flex: 2
+        }
+        .title .name {
+            width: 500px;
+            text-align: left;
+        }
+        .title .country {
+            width: 140px;
+            display: flex;
+            align-items: center;
+        }
+        .title1 p {
+            /* min-width: 120px; */
+            margin-right: 20px;
+            flex: 1
+        }
+        .title1 div {
+            flex: 2
+        }
+        .title1 .name {
+            width: 500px;
+            text-align: left;
+        }
+        .title1 .country {
+            width: 140px;
+            display: flex;
+            align-items: center;
+        }
+        ul li {
+            /* padding: 0 50px; */
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-align: center;
+        }
+        ul li:nth-child(odd) {
+            background-color: #F0F7FF;
+        }
+        ul li:nth-child(even) {
+            background-color: #B5D4F4;
+        }
+        .newallpointlistul li:nth-child(odd) {
+            background-color: #B5D4F4;
+        }
+        .newallpointlistul li:nth-child(even) {
+            background-color: #F0F7FF;
+        }
+        .newtest li:nth-child(odd) {
+            background-color: #B5D4F4;
+        }
+        .newtest li:nth-child(even) {
+            background-color: #F0F7FF;
+        }
+        .newonepointList li:nth-child(odd) {
+            background-color: #B5D4F4;
+        }
+        .newonepointList li:nth-child(even) {
+            background-color: #F0F7FF;
+        }
+        ul li>p {
+            /* min-width: 120px; */
+            margin-right: 20px;
+            flex: 1;
+        }
+        ul li div {
+            /* min-width: 120px; */
+            /* margin-right: 20px; */
+            text-align: left;
+            flex: 2
+        }
+        ul li div p:nth-child(2) {
+            display: flex;
+            align-items: center
+        }
+        ul li div img {
+            max-width: 25px;
+            /* height: 16px; */
+            margin-right: 4px
+        }
+        ul li .name {
+            width: 500px;
+            text-align: left;
+        }
+        ul li .country {
+            width: 140px;
+            display: flex;
+            align-items: center;
+        }
+        .country img {
+            width: 35px;
+            margin: 0 5px
+        }
+        .pointList table {
+            width: 100%;
+        }
+        .cont_foot {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 8px 15px;
+            background-color: #F0F7FF;
+            position: relative;
+            z-index: 100;
+            height: 110px;
+        }
+        .cont_foot img {
+            height: 110px;
+        }
+        table td {
+            text-align: center
+        }
+        .upRout {
+            width: 20px;
+            height: 20px;
+            position: absolute;
+            left: 50%;
+            margin-left: -10px;
+            bottom: 2px;
+            color: #fff;
+            cursor: pointer;
+        }
+        .allPointList {
+            /* 改回来 */
+            overflow: hidden;
+            position: relative;
+        }
+        .onepointList {
+            max-height: 550px;
+            overflow: hidden;
+        }
+        .nowPlayer {
+            min-height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.76)
+        }
+        .nowPlayer p {
+            margin-right: 20px;
+            flex: 1;
+        }
+        .nowPlayer .country {
+            width: 140px;
+            display: flex;
+            align-items: center;
+        }
+        .nowPlayer .name {
+            width: 500px;
+            text-align: left;
+        }
+        .pointList {
+            /* 改回来 */
+            overflow: hidden;
+            position: relative;
+            /* max-height: 555px; */
+        }
+        .title1 {
+            /* position: absolute; */
+            /* width: 100%; */
+            /* bottom: 0 */
+            background-color: #2e89e4;
+        }
+        .titleOddclass {
+            background-color: #7bb1e7;
+        }
+        .test{
+            display: flex;
+            align-items: center
+        }
+    </style>
+
+    <body>
+        <div class="post_back" id="app">
+            <div class="header">
+                <div>
+                    <span>赛事：</span>
+                    <select @change="gameChange" name="" id="">
+                        <option v-for="(item,index) in gameList" :key="index" :value="item">{{item}}</option>
+                    </select>
+                </div>
+                <div>
+                    <span>赛项：</span>
+                    <select v-model="gameItemName" @change="gameItemChange" name="" id="">
+                        <option v-for="(item,index) in gameItemList" :key="index" :value="item">{{item}}</option>
+                    </select>
+                </div>
+                <div>
+                    <span>组别：</span>
+                    <select v-model="groupName" @change="groupChange" name="" id="">
+                        <option  v-for="(item,index) in groupList" :key="index" :value="item">{{item}}
+                        </option>
+                    </select>
+                </div>
+                <div>
+                    <span>显示方式：</span>
+                    <select v-model="showType" name="" @change="selectPoint" id="">
+                        <option v-for="(item,index) in poionList" :key="index" :value="item.no">{{item.no}}</option>
+                    </select>
+                </div>
+
+            </div>
+            <!-- 展示单点 -->
+            <div v-show="!isAllpoint" class="cont_one">
+                <div class="cont_head">
+                    <p>{{gameName}}</p>
+                    <!-- <p>Middle-ME-32-16.2km</p> -->
+                    <p>{{gameItemName}}-{{groupName}}-{{pointName}}</p>
+                </div>
+                <div class="title">
+                    <p>#</p>
+                    <p class="country">COUNTRY</p>
+                    <p>NO.</p>
+                    <p class="name">NAME</p>
+                    <p>TOTAL TIME</p>
+                </div>
+                <ul class="" style="width:100%">
+                    <li v-for="(item,index) in onePointManlist" v-if="index<3" :key="index">
+                        <p>{{index+1}}</p>
+                        <p class="country">
+                            <img :src="'http://120.79.142.200:82/'+item.nationalFlagUrl" alt="">
+                            <span>{{item.sportsman.nationality}}</span>
+                        </p>
+                        <p>{{item.sportsman.no}}</p>
+                        <p class="name">{{item.sportsman.name}}</p>
+                        <p>{{item.theDiffTime}}</p>
+                    </li>
+                </ul>
+                <div class="pointList">
+                    <div class="onepointList newonepointList">
+                        <ul class="" style="position: absolute;width:100%">
+                            <li v-for="(item,index) in onePointManlist" v-if="index>=3" :key="index">
+                                <p>{{index+1}}</p>
+                                <p class="country">
+                                    <img :src="'http://120.79.142.200:82/'+item.nationalFlagUrl" alt="">
+                                    <span>{{item.sportsman.nationality}}</span>
+                                </p>
+                                <p>{{item.sportsman.no}}</p>
+                                <p class="name">{{item.sportsman.name}}</p>
+                                <p>{{item.theDiffTime}}</p>
+                            </li>
+
+                        </ul>
+                    </div>
+                    <!-- <div v-show="pageSize>1" style="position: absolute;bottom:0;width: 100%;z-index: 100">
+                        <div v-for="(item,index) in currentonePointList" :key="index" class="title1"
+                            :class="index==1?'titleOddclass':''"
+                            style="font-size:16px;align-items:center;font-weight:400;padding-bottom:0">
+                            <p></p>
+                            <p class="country">
+                                <img v-show="item.nationality" src="./img/cn.png" alt="">
+                                <span>{{item.nationality?item.nationality:''}}</span>
+                            </p>
+                            <p>{{item.no?item.no:''}}</p>
+                            <p class="name">{{item.name?item.name:''}}</p>
+                            <p>{{item.pointTime?item.pointTime:''}}</p>
+                        </div>
+                    </div> -->
+
+                </div>
+                <div class="cont_foot"><img src="./img/gamelogo.png" alt=""></div>
+            </div>
+            <!-- 展示全点 -->
+            <div v-show="isAllpoint&&!isjieli" class="cont_all">
+                <div class="cont_head">
+                    <p>{{gameName}}</p>
+                    <p>{{gameItemName}}-{{groupName}}</p>
+                </div>
+                <div class="pointList">
+                    <div class="title">
+                        <p>#</p>
+                        <div class="country">COUNTRY</div>
+                        <p v-for="(item,index) in poionList" :key="index" v-if="index>0">
+                            {{ (index==poionList.length-1)?'F1':item.no}}
+                        </p>
+                    </div>
+                    <!-- 所有时间点 -->
+                    <ul class="allpointlistul" style="width:100%">
+                        <li v-for="(item,index) in manList" v-if="index<3" :key="index">
+                            <p>{{index+1}}</p>
+                            <div class="">
+                                <P>{{item.name}} </P>
+                                <P>
+                                    <img :src="'http://120.79.142.200:82/'+item.nationalFlagUrl" alt="">
+                                    <span>{{item.nationality  }}  </span>
+                                    <span  style="margin-left: 4px;">  {{  item.no}}</span>
+                                </P>
+                            </div>
+                            <!-- <p>开始时间</p> -->
+                            <p v-for="(pointitem,pointindex) in item.pointList" :key="pointindex"
+                                v-if="pointindex>0"  :style="{color:(pointindex==(item.pointList.length-1)?(item.istruth?'red':'#333'):'#333')}">
+                                {{pointitem.index==0?formatDate(item.startTime).substring(11):pointitem.recordTime?pointitem.recordTime:''}}
+                            </p>
+                            <!-- <p>结束时间</p> -->
+                        </li>
+                    </ul>
+                    <div class="allPointList">
+                        <ul class="allpointlistul newtest" style="position: absolute;width:100%">
+                            <li v-for="(item,index) in manList" v-if="index>=3" :key="index">
+                                <p>{{index+1}}</p>
+                                <div class="">
+                                    <P>{{item.name}} </P>
+                                    <P>
+                                        <img  :src="'http://120.79.142.200:82/'+item.nationalFlagUrl" alt="">
+                                        <span>{{item.nationality  }}  </span>
+                                        <span style="margin-left: 4px;">  {{  item.no}}</span>
+                                    </P>
+                                </div>
+                                <!-- <p>开始时间</p> -->
+                                <p v-for="(pointitem,pointindex) in item.pointList" :key="pointindex"
+                                    v-if="pointindex>0" :style="{color:(pointindex==(item.pointList.length-1)?(item.istruth?'red':'#333'):'#333')}">
+                                    {{pointitem.index==0?formatDate(item.startTime).substring(11):pointitem.recordTime?pointitem.recordTime:''}}
+                                </p>
+                                <!-- <p>结束时间</p> -->
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- <div v-show="pageSize>1" style="position: absolute;bottom:0;width: 100%;z-index: 100">
+                        <div class="title1" v-for="(item,index) in currentManPointList" :key="index"
+                            style="font-size: 14px;font-weight: 400;padding-bottom: 0;align-items: center"
+                            :class="index==1?'titleOddclass':''">
+                            <p></p>
+                            <div class="country" style="display: block;text-align:left;">
+                                <P>{{item.name?item.name:''}}</P>
+                                <P style="display: flex;align-items:center">
+                                    <img v-if="item.nationality" style="width: 25px;height:16px;margin-left:0"
+                                        src="./img/cn.png" alt="">
+                                    <span>{{item.nationality?item.nationality:''}}</span>
+                                </P>
+                            </div>
+                            <p v-for="(pointitem,pointindex) in item.pointList" :key="pointindex" v-if="pointindex>0">
+                                {{pointitem.index==0?pointitem.startTime:pointitem.recordTime?pointitem.recordTime:''}}
+                            </p>
+                        </div>
+                    </div> -->
+
+                </div>
+                <div class="cont_foot">
+                    <img src="./img/gamelogo.png" alt="">
+                </div>
+            </div>
+            <div v-show="isAllpoint&&isjieli" class="cont_all">
+                <div class="cont_head">
+                    <p>{{gameName}}</p>
+                    <p>{{gameItemName}}-{{groupName}}</p>
+                </div>
+                <div class="pointList">
+                    <div class="title">
+                        <p>#</p>
+                        <div class="country" style="flex:1">COUNTRY</div>
+                        <div style="flex: 1">NAME</div>
+                        <p v-for="(item,index) in poionList" :key="index" v-if="index>0">
+                            {{ (index==poionList.length-1)?'F1':item.no}}
+                        </p>
+                        <p>TOTAL</p>
+                    </div>
+                    <!-- 所有时间点 -->
+                    <ul>
+                        <li v-for="(item,key,index) in jielidata" :key="index" v-if="index==0&&!(/^\d+$/.test(key.substr(0,1)))">
+                            <p>{{index+1}}</p>
+                            <div class=""  style="flex:1;display:flex;align-items: center;">
+                                <img :src="item.nationalFlagUrl" alt="">
+                                <p>{{item.country}}</p>
+                            </div>
+                            <div style="flex: 1;">
+                                <p class="test" style="justify-content:center" v-for="(manitem,manindex) in item.manlist" :key="manindex">{{manitem.name}} {{manitem.no}}</p>
+                            </div>
+                            <!-- <p>开始时间</p> -->
+                            <div style="flex: 1;margin-right: 20px" v-for="(pointitem,pointindex) in poionList" :key="pointindex"
+                                v-if="pointindex>0">
+                                <p class="test" v-for="(manpointitem,manpointindex) in item.manlist" :key="manpointindex">
+                                    <span style="width: 100%;display:inline-block;text-align:center" v-for="(childpointitem,childpointindex) in manpointitem.pointList" :key="childpointindex" v-if="childpointitem.id==pointitem.id">{{pointitem.index==0?formatDate(manpointitem.startTime).substring(11):childpointitem.recordTime?childpointitem.recordTime:''}}</span>
+                                </p>
+                            </div>
+                            <div style="flex: 1;margin-right: 20px;text-align: center" :style="{color:(item.istruth?'red':'#333')}">{{item.totaltime}}</div>
+                        </li>
+                    </ul>
+                    <div class="allPointList">
+                        <ul class="newallpointlistul" style="position: absolute;width:100%">
+                            <li v-for="(item,key,index) in jielidata" :key="index" v-if="index>0&&!(/^\d+$/.test(key.substr(0,1)))">
+                                <p>{{index+1}}</p>
+                                <div class=""  style="flex:1;display:flex;align-items: center;">
+                                    <img :src="item.nationalFlagUrl" alt="">
+                                    <p>{{item.country}}</p>
+                                </div>
+                                <div style="flex: 1">
+                                    <p class="test" style="justify-content:center" v-for="(manitem,manindex) in item.manlist" :key="manindex">{{manitem.name}} {{manitem.no}}</p>
+                                </div>
+                                <!-- <p>开始时间</p> -->
+                                <div style="flex: 1;margin-right: 20px" v-for="(pointitem,pointindex) in poionList" :key="pointindex"
+                                    v-if="pointindex>0">
+                                    <p class="test" v-for="(manpointitem,manpointindex) in item.manlist" :key="manpointindex">
+                                        <span style="width: 100%;display:inline-block;text-align:center" v-for="(childpointitem,childpointindex) in manpointitem.pointList" :key="childpointindex" v-if="childpointitem.id==pointitem.id">{{pointitem.index==0?formatDate(manpointitem.startTime).substring(11):childpointitem.recordTime?childpointitem.recordTime:''}}</span>
+                                    </p>
+                                </div>
+                                <div style="flex: 1;margin-right: 20px;text-align: center" :style="{color:(item.istruth?'red':'#333')}">
+                                    {{item.totaltime}}
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="cont_foot">
+                    <img src="./img/gamelogo.png" alt="">
+                </div>
+            </div>
+
+        </div>
+        <script>
+            var baseUrl = "http://120.79.142.200:8080/"
+            var app = new Vue({
+                el: '#app',
+                data: {
+                    jielidata:{},
+                    onePointCurrentMan: {},
+                    currentMan: {},
+                    showTypeValue: 1,
+                    relayNo: 1,
+                    newheight: 500,
+                    jielinewheight:500,
+                    isAllpoint: true, //是否全显示
+                    gameList: [], //赛事
+                    gameItemList: [], //赛项
+                    groupList: [], //组别
+                    gameItem: {}, //赛事赛项对应
+                    groupItem: {}, //组别对应
+                    gameName: '', //赛事名称
+                    gameItemName: '', //赛项名称
+                    groupName: '', //组别名称
+                    gameId: {}, //赛事id
+                    gameItemListId: {}, //赛项组别对应的id
+                    currentGameId: '', //当前选择的赛事Id
+                    currentGameItemId: '', //当前选择的赛项Id
+                    crrrentGroupId: '', //当前选择的组别id
+                    showType: '', //显示方式
+                    poionList: [], //点列表
+                    onePointManlist: [], //单点人员列表
+                    havemanId: [], //已经有的人员id
+                    pointName: '', //点名称
+                    manList: [], //人员列表
+                    windowIndent: '', //窗口标识
+                    test: [],
+                    pointId: '', //中间点id
+                    jielipagesize:1,
+                    i: 0,
+                    data: [{
+                        country: 'CN',
+                        no: '005',
+                        flag: './img/cn.png',
+                        name: 'mike wang',
+                        totalTime: '12:12:12'
+                    }, ],
+                    listHeight: 50,
+                    ulHeight: 500,
+                    pageSize: 1,
+                    screenSize: 1,
+                    screenSize1:1,
+                    timer: null,
+                    isjieli: false,
+                    currentManPointList: [
+
+                    ],
+                    currentonePointList: [
+
+                    ],
+                },
+                async mounted() {
+                    this.getData()
+                    this.gameItemList = this.gameItem[this.gameList[0]] //赛项列表
+                    this.gameItemName = this.gameItem[this.gameList[0]][0] //赛项名称
+                    this.groupList = this.groupItem[this.gameList[0]][this.gameItemName] //组别列表
+                    this.gameName = this.gameList[0] //赛事名称
+                    this.groupName = this.groupList[0] //组别名称
+                    this.showType = '全显示'
+                    this.currentGameId = this.gameId[this.gameName] //赛事id
+                    this.currentGameItemId = this.gameItemListId[this.gameName][this.gameItemName] //赛项id
+                    this.crrrentGroupId = this.gameItemListId[this.gameName][this.gameItemName + this
+                        .groupName
+                    ] //组别id
+                    this.pointList(this.currentGameId, this.currentGameItemId, this.crrrentGroupId)
+                    if (this.gameItemListId[this.gameName][this.gameItemName + 'type'] == 2) {
+                        //接力赛
+                        console.log('接力赛')
+                        this.isjieli = true
+                        // window.location.href=`newPostBack.html?currentGameId=${this.currentGameId}&currentGameItemId=${this.currentGameItemId}&crrrentGroupId=${this.crrrentGroupId}`
+                        await this.getMan(this.currentGameId, this.currentGameItemId, this.crrrentGroupId,this.relayNo)
+                        let that = this
+                        clearInterval(that.timer) 
+                        // window.location.href=`newPostBack.html?currentGameId=${this.currentGameId}&currentGameItemId=${this.currentGameItemId}&crrrentGroupId=${this.crrrentGroupId}`
+                        await this.getMan(this.currentGameId, this.currentGameItemId, this.crrrentGroupId, this.relayNo)
+                        this.timer = setInterval(() => {
+                            $.each(that.jielidata,function(key,value){
+                                if(value.ispause){
+                                    value.comparetime = parseInt(that.getTimeDiff(value.currenttime,value.startTime).replace(/[^0-9]/ig,"")) 
+                                    that.$set(that.jielidata,that.jielidata[key].comparetime,parseInt(that.getTimeDiff(value.currenttime,value.startTime).replace(/[^0-9]/ig,"")) )
+                                    value.totaltime = that.getTimeDiff(value.currenttime,value.startTime)
+                                    that.$set(that.jielidata,that.jielidata[key].totaltime,that.getTimeDiff(value.currenttime,value.startTime))
+                                    if(value.istruth){
+                                        value.comparetime =300
+                                    }
+                                }
+                                if(value.currenttime>value.startTime&&!value.ispause){
+                                    value.currenttime = new Date().getTime()
+                                    value.currenttime=value.currenttime+1000
+                                    value.totaltime = that.getTimeDiff(value.currenttime,value.startTime)
+                                    if(value.totaltime.substr(0,2)>2){
+                                        clearInterval(that.timer )
+                                    }
+                                    that.$set(that.jielidata,that.jielidata[key].totaltime,that.getTimeDiff(value.currenttime,value.startTime))
+                                }
+                                if(/^\d+$/.test(key.substr(0,1))){
+                                    that.$delete(that.jielidata,key)
+                                }
+                            })
+                            let sorted_keys_array = Object.keys(that.jielidata).sort((a,b)=>{
+                                return that.jielidata[a].comparetime-that.jielidata[b].comparetime;
+                            });
+                            let sortObj = {}
+                            for(let key of sorted_keys_array){
+                                if(/^\d+$/.test(key.substr(0,1))){
+
+                                }else{
+                                    sortObj[key] = that.jielidata[key]
+                                }
+                            }
+                            that.jielidata = sortObj
+                        }, 1000)
+                    } else {
+                        this.isjieli = false
+                        await this.getMan(this.currentGameId, this.currentGameItemId, this.crrrentGroupId)
+                    }
+
+                    // await this.getMan(this.currentGameId,this.currentGameItemId,this.crrrentGroupId)
+                    this.windowIndent = this.currentGameId + this.currentGameItemId + this.crrrentGroupId
+                    this.fullScreen()
+                    let screenHeight = window.screen.height; //屏幕高度
+                    let hfHeight = $($('.cont_foot')[0]).outerHeight() + $($('.cont_head')[0]).outerHeight()
+                    let ulHeight = screenHeight - hfHeight
+                    this.listHeight = ulHeight / 11
+
+                    
+                    
+                    this.ulHeight = ulHeight
+                    this.newheight = this.listHeight * 7
+                    this.jielinewheight = this.listHeight * 9
+                    $('.title').height(this.listHeight - 8)
+                    $('ul li').height(this.listHeight)
+                    if(this.isjieli){//接力
+                        this.listHeight = this.ulHeight / 13
+                        $('.test').height(this.listHeight)
+                        $('ul li').height('auto')
+                        
+                    }else{
+                        this.listHeight = this.ulHeight / 11
+                        $('ul li').height(this.listHeight)
+                    }
+                    $('.title1').height(this.listHeight)
+                    $('.allPointList,.pointList').height(this.ulHeight)
+                },
+                methods: {
+                    async relayNochange(e) {
+                        // console.log(e.target.value)
+                        this.relayNo = e.target.value
+                        this.pointList(this.currentGameId, this.currentGameItemId, this.crrrentGroupId)
+                        await this.getMan(this.currentGameId, this.currentGameItemId, this.crrrentGroupId,
+                            this.relayNo)
+                        this.isAllpoint = true
+                        this.showType = '全显示'
+                        this.windowIndent = this.currentGameId + this.currentGameItemId + this.crrrentGroupId
+                        this.getWebsocket()
+                        $('.title').height(this.listHeight - 8)
+                        $('.title1').height(this.listHeight)
+                        $('ul li').height(this.listHeight)
+                        $('.allPointList,.pointList').height(this.ulHeight)
+                        // $('.allPointList,.pointList').css('max-height',this.ulHeight+'px')
+                    },
+                    getData() {
+                        let that = this;
+                        $.ajax({ //获取赛事赛项
+                            url: baseUrl + 'along/CrossCompetitionController/findAllCompetition',
+                            type: 'POST',
+                            async: false,
+                            success(res) {
+                                console.log(res)
+                                if (res.status == 1) {
+                                    for (let i = 0; i < res.data.length; i++) {
+                                        let item = res.data[i]
+                                        that.gameId[item.name] = item.id //赛事对应id
+                                        that.gameList.push(item.name)
+                                        that.gameItem[item.name] = []
+                                        $.ajax({
+                                            url: baseUrl +
+                                                'along/CrossCompetitionController/findEntity',
+                                            type: 'POST',
+                                            data: {
+                                                competitionId: item.id
+                                            },
+                                            async: false,
+                                            success(res) {
+                                                // console.log(res)
+                                                if (res.status == 1) {
+                                                    let resItem = res.data;
+                                                    that.groupItem[resItem.name] = {} //组别
+                                                    that.gameItemListId[resItem
+                                                        .name] = {} //赛项id
+                                                    resItem.itemGroup.forEach((ele, index) => {
+                                                        if (that.gameItem[item.name]
+                                                            .indexOf(ele.itemName) < 0
+                                                            ) {
+                                                            that.gameItem[item.name]
+                                                                .push(ele.itemName)
+                                                        }
+                                                        if (!that.groupItem[resItem
+                                                                .name][ele.itemName]) {
+                                                            that.groupItem[resItem.name]
+                                                                [ele.itemName] = []
+                                                        }
+                                                        that.groupItem[resItem.name][ele
+                                                            .itemName
+                                                        ].push(ele.groupName)
+                                                        that.gameItemListId[resItem
+                                                                .name][ele.itemName] =
+                                                            ele.competitionItemId //赛项id
+                                                        that.gameItemListId[resItem
+                                                            .name][ele.itemName +
+                                                            ele.groupName
+                                                        ] = ele.id
+                                                        that.gameItemListId[resItem
+                                                            .name][ele.itemName +
+                                                            'type'
+                                                        ] = ele.type
+                                                    });
+                                                }
+                                                // console.log(that.gameItemListId)
+                                            }
+                                        })
+                                    }
+                                    // console.log(that.groupItem)
+                                }
+                            }
+                        })
+
+                    },
+                    async gameChange(e) { //赛事选择
+                        // console.log(e.target.value)
+                        let value = e.target.value
+                        this.gameItemList = this.gameItem[value] //赛项列表
+                        this.gameItemName = this.gameItem[value][0] //赛项名称
+                        this.gameName = value //赛事名称
+                        this.groupList = this.groupItem[value][this.gameItemName] //组别列表
+                        this.groupName = this.groupList[0] //组别名称
+                        this.currentGameId = this.gameId[value] //赛事id
+                        this.currentGameItemId = this.gameItemListId[value][this.gameItemName] //赛项id
+                        this.crrrentGroupId = this.gameItemListId[value][this.gameItemName + this.groupName] //组别id
+                        this.pointList(this.currentGameId, this.currentGameItemId, this.crrrentGroupId)
+                        if (this.gameItemListId[this.gameName][this.gameItemName + 'type'] == 2) {
+                            this.isjieli = true
+                            let that = this
+                            clearInterval(that.timer)
+                            // window.location.href=`newPostBack.html?currentGameId=${this.currentGameId}&currentGameItemId=${this.currentGameItemId}&crrrentGroupId=${this.crrrentGroupId}`
+                            await this.getMan(this.currentGameId, this.currentGameItemId, this.crrrentGroupId, this.relayNo)
+                            this.timer = setInterval(() => {
+                                $.each(that.jielidata,function(key,value){
+                                    if(value.ispause){
+                                        value.comparetime = parseInt(that.getTimeDiff(value.currenttime,value.startTime).replace(/[^0-9]/ig,"")) 
+                                        that.$set(that.jielidata,that.jielidata[key].comparetime,parseInt(that.getTimeDiff(value.currenttime,value.startTime).replace(/[^0-9]/ig,"")) )
+                                        value.totaltime = that.getTimeDiff(value.currenttime,value.startTime)
+                                        that.$set(that.jielidata,that.jielidata[key].totaltime,that.getTimeDiff(value.currenttime,value.startTime))
+                                        if(value.istruth){
+                                            value.comparetime =300
+                                        }
+                                    }
+                                    if(value.currenttime>value.startTime&&!value.ispause){
+                                        value.currenttime = new Date().getTime()
+                                        value.currenttime=value.currenttime+1000
+                                        value.totaltime = that.getTimeDiff(value.currenttime,value.startTime)
+                                        if(value.totaltime.substr(0,2)>3){
+                                            clearInterval(that.timer )
+                                        }
+                                        that.$set(that.jielidata,that.jielidata[key].totaltime,that.getTimeDiff(value.currenttime,value.startTime))
+                                    }
+                                    if(/^\d+$/.test(key.substr(0,1))){
+                                        that.$delete(that.jielidata,key)
+                                    }
+                                })
+                                let sorted_keys_array = Object.keys(that.jielidata).sort((a,b)=>{
+                                    return that.jielidata[a].comparetime-that.jielidata[b].comparetime;
+                                });
+                                let sortObj = {}
+                                for(let key of sorted_keys_array){
+                                    if(/^\d+$/.test(key.substr(0,1))){
+
+                                    }else{
+                                        sortObj[key] = that.jielidata[key]
+                                    }
+                                }
+                                that.jielidata = sortObj
+                            }, 1000)
+                        } else {
+                            this.isjieli = false
+                            await this.getMan(this.currentGameId, this.currentGameItemId, this.crrrentGroupId)
+                        }
+                        this.isAllpoint = true
+                        this.showType = '全显示'
+                        this.windowIndent = this.currentGameId + this.currentGameItemId + this
+                            .crrrentGroupId
+                        this.getWebsocket()
+                        $('.title').height(this.listHeight - 8)
+                        $('.title1').height(this.listHeight)
+                        if(this.isjieli){//接力
+                            this.listHeight = this.ulHeight / 13
+                            $('.test').height(this.listHeight)
+                            $('ul li').height('auto')
+                        }else{
+                            this.listHeight = this.ulHeight / 11
+                            $('ul li').height(this.listHeight)
+                        }
+                        this.newheight = this.listHeight * 7
+                        this.jielinewheight = this.listHeight * 9
+                        $('.allPointList,.pointList').height(this.ulHeight)
+                    },
+                    async gameItemChange(e) { //赛项选择
+                        let value = e.target.value
+                        this.gameItemName = value //赛项名称
+                        this.groupList = this.groupItem[this.gameName][this.gameItemName] //组别列表
+                        this.groupName = this.groupList[0] //组别名称
+                        this.currentGameItemId = this.gameItemListId[this.gameName][this.gameItemName] //赛项id
+                        this.crrrentGroupId = this.gameItemListId[this.gameName][this.gameItemName + this.groupName] //组别id
+                        this.pointList(this.currentGameId, this.currentGameItemId, this.crrrentGroupId)
+                        if (this.gameItemListId[this.gameName][this.gameItemName + 'type'] == 2) {
+                            this.isjieli = true
+                            console.log('接力')
+                            let that = this
+                            clearInterval(that.timer) 
+                            // window.location.href=`newPostBack.html?currentGameId=${this.currentGameId}&currentGameItemId=${this.currentGameItemId}&crrrentGroupId=${this.crrrentGroupId}`
+                            await this.getMan(this.currentGameId, this.currentGameItemId, this.crrrentGroupId, this.relayNo)
+                            this.timer = setInterval(() => {
+                                $.each(that.jielidata,function(key,value){
+                                    if(value.ispause){
+                                        value.comparetime = parseInt(that.getTimeDiff(value.currenttime,value.startTime).replace(/[^0-9]/ig,"")) 
+                                        that.$set(that.jielidata,that.jielidata[key].comparetime,parseInt(that.getTimeDiff(value.currenttime,value.startTime).replace(/[^0-9]/ig,"")) )
+                                        value.totaltime = that.getTimeDiff(value.currenttime,value.startTime)
+                                        that.$set(that.jielidata,that.jielidata[key].totaltime,that.getTimeDiff(value.currenttime,value.startTime))
+                                        if(value.istruth){
+                                            value.comparetime =300
+                                        }
+                                    }
+                                    if(value.currenttime>value.startTime&&!value.ispause){
+                                        value.currenttime = new Date().getTime()
+                                        value.currenttime=value.currenttime+1000
+                                        value.totaltime = that.getTimeDiff(value.currenttime,value.startTime)
+                                        if(value.totaltime.substr(0,2)>3){
+                                            clearInterval(that.timer )
+                                        }
+                                        that.$set(that.jielidata,that.jielidata[key].totaltime,that.getTimeDiff(value.currenttime,value.startTime))
+                                    }
+                                    if(/^\d+$/.test(key.substr(0,1))){
+                                        that.$delete(that.jielidata,key)
+                                    }
+                                })
+                                let sorted_keys_array = Object.keys(that.jielidata).sort((a,b)=>{
+                                    return that.jielidata[a].comparetime-that.jielidata[b].comparetime;
+                                });
+                                let sortObj = {}
+                                for(let key of sorted_keys_array){
+                                    if(/^\d+$/.test(key.substr(0,1))){
+
+                                    }else{
+                                        sortObj[key] = that.jielidata[key]
+                                    }
+                                }
+                                that.jielidata = sortObj
+                            }, 1000)
+                        } else {
+                            this.isjieli = false
+                            await this.getMan(this.currentGameId, this.currentGameItemId, this.crrrentGroupId)
+                        }
+                        this.isAllpoint = true
+                        this.showType = '全显示'
+                        this.windowIndent = this.currentGameId + this.currentGameItemId + this.crrrentGroupId
+                        this.getWebsocket()
+                        let that = this
+                        
+                        if(this.isjieli){//接力
+                            this.listHeight = this.ulHeight / 13
+                            $('.test').height(this.listHeight)
+                            $('ul li').height('auto')
+                        }else{
+                            this.listHeight = this.ulHeight / 11
+                            $('ul li').height(this.listHeight)
+                        }
+                        $('.title').height(this.listHeight - 8)
+                        $('.title1').height(this.listHeight)
+                        this.newheight = this.listHeight * 7
+                        this.jielinewheight = this.listHeight * 9
+                        $('.allPointList,.pointList').height(this.ulHeight)
+                    },
+                    async groupChange(e) { //组别选择
+                        let value = e.target.value
+                        this.groupName = value //组别名称
+                        this.crrrentGroupId = this.gameItemListId[this.gameName][this.gameItemName + this.groupName] //组别id
+                        // console.log(this.currentGameId,this.currentGameItemId,this.crrrentGroupId)
+                        this.pointList(this.currentGameId, this.currentGameItemId, this.crrrentGroupId)
+                        if (this.gameItemListId[this.gameName][this.gameItemName + 'type'] == 2) {
+                            this.isjieli = true
+                            // window.location.href=`newPostBack.html?currentGameId=${this.currentGameId}&currentGameItemId=${this.currentGameItemId}&crrrentGroupId=${this.crrrentGroupId}`
+                            await this.getMan(this.currentGameId,this.currentGameItemId,this.crrrentGroupId,this.relayNo)
+                            let that = this
+                            clearInterval(that.timer)
+                            this.timer = setInterval(() => {
+                                $.each(that.jielidata,function(key,value){
+                                    if(value.ispause){
+                                        value.comparetime = parseInt(that.getTimeDiff(value.currenttime,value.startTime).replace(/[^0-9]/ig,"")) 
+                                        that.$set(that.jielidata,that.jielidata[key].comparetime,parseInt(that.getTimeDiff(value.currenttime,value.startTime).replace(/[^0-9]/ig,"")) )
+                                        value.totaltime = that.getTimeDiff(value.currenttime,value.startTime)
+                                        that.$set(that.jielidata,that.jielidata[key].totaltime,that.getTimeDiff(value.currenttime,value.startTime))
+                                        if(value.istruth){
+                                            value.comparetime =300
+                                        }
+                                    }
+                                    if(value.currenttime>value.startTime&&!value.ispause){
+                                        value.currenttime = new Date().getTime()
+                                        value.currenttime=value.currenttime+1000
+                                        value.totaltime = that.getTimeDiff(value.currenttime,value.startTime)
+                                        if(value.totaltime.substr(0,2)>2){
+                                            clearInterval(that.timer )
+                                        }
+                                        that.$set(that.jielidata,that.jielidata[key].totaltime,that.getTimeDiff(value.currenttime,value.startTime))
+                                    }
+                                    if(/^\d+$/.test(key.substr(0,1))){
+                                        that.$delete(that.jielidata,key)
+                                    }
+                                })
+                                let sorted_keys_array = Object.keys(that.jielidata).sort((a,b)=>{
+                                    return that.jielidata[a].comparetime-that.jielidata[b].comparetime;
+                                });
+                                let sortObj = {}
+                                for(let key of sorted_keys_array){
+                                    if(/^\d+$/.test(key.substr(0,1))){
+
+                                    }else{
+                                        sortObj[key] = that.jielidata[key]
+                                    }
+                                }
+                                that.jielidata = sortObj
+                            }, 1000)
+                        } else {
+                            this.isjieli = false
+                            await this.getMan(this.currentGameId, this.currentGameItemId, this
+                                .crrrentGroupId)
+                        }
+                        // await this.getMan(this.currentGameId,this.currentGameItemId,this.crrrentGroupId)
+                        this.isAllpoint = true
+                        this.showType = '全显示'
+                        this.windowIndent = this.currentGameId + this.currentGameItemId + this
+                            .crrrentGroupId
+                        this.getWebsocket()
+                        if(this.isjieli){//接力
+                            this.listHeight = this.ulHeight / 13
+                            $('.test').height(this.listHeight)
+                            $('ul li').height('auto')
+                        }else{
+                            this.listHeight = this.ulHeight / 11
+                            $('ul li').height(this.listHeight)
+                        }
+                        $('.title').height(this.listHeight - 8)
+                        $('.title1').height(this.listHeight)
+                        this.newheight = this.listHeight * 7
+                        this.jielinewheight = this.listHeight * 9
+                        $('.allPointList,.pointList').height(this.ulHeight)
+                        // $('.allPointList,.pointList').css('max-height',this.ulHeight+'px')
+                    },
+                    
+                    pointList(competitionId, competitionItemId, groupId) { //获取点列表
+                        let that = this
+                        that.poionList = []
+                        that.poionList.push({
+                            no: '全显示',
+                            id: 0
+                        })
+                        $.ajax({
+                            url: baseUrl + 'along/CrossLineController/findLinePointData',
+                            type: 'POST',
+                            async: false,
+                            data: {
+                                competitionId: competitionId,
+                                competitionItemId: competitionItemId,
+                                groupId: groupId
+                            },
+                            success(res) {
+                                // console.log(res)
+                                if (res.status == 1) {
+                                    let data = res.data
+                                    if (data.length > 0) {
+                                        let obj = {}
+                                        let pointlength = data[0].pointList.length;
+                                        for (let i = 0; i < data.length; i++) {
+                                            let arrdata = data[i]
+                                            for (let j = 0; j < arrdata.pointList.length; j++) {
+                                                let point = arrdata.pointList[j]
+                                                if (!obj[j]) {
+                                                    obj[j] = []
+                                                }
+                                                obj[j].push({
+                                                    no: point.pointNo,
+                                                    id: point.pointId,
+                                                    index: j
+                                                })
+                                            }
+                                        }
+                                        $.each(obj, function (key, value) {
+                                            let arr = []
+                                            for (let i = 0; i < value.length; i++) {
+                                                arr.push(value[i].no)
+                                            }
+                                            let repeat = Array.from(new Set(arr))
+                                            if (repeat.length <= 1) {
+                                                that.poionList.push(value[0])
+                                            }
+                                        })
+                                    }
+
+                                }
+                            }
+                        })
+                    },
+                    async selectPoint(e) { //选择全显示还是部分点
+                        let value = e.target.value
+                        if (value != '全显示') {
+                            this.isAllpoint = false
+                            this.windowIndent = this.currentGameId + this.currentGameItemId + this
+                                .crrrentGroupId + value
+                            this.getWebsocket()
+                            this.pointName = value
+                            for (let i = 0; i < this.poionList.length; i++) {
+                                let item = this.poionList[i]
+                                //console.log(item,value)
+                                if (item.no == value) {
+                                    this.pointId = item.id
+                                }
+                            }
+                            await this.getOnePointHistory(this.currentGameId, this.currentGameItemId, this
+                                .crrrentGroupId, this.pointId)
+                        } else {
+                            // await this.getMan(this.currentGameId,this.currentGameItemId,this.crrrentGroupId)
+                            if (this.gameItemListId[this.gameName][this.gameItemName + 'type'] == 2) {
+                                this.isjieli = true
+                                // window.location.href=`newPostBack.html?currentGameId=${this.currentGameId}&currentGameItemId=${this.currentGameItemId}&crrrentGroupId=${this.crrrentGroupId}`
+                                await this.getMan(this.currentGameId, this.currentGameItemId, this.crrrentGroupId, this.relayNo)
+                            } else {
+                                this.isjieli = false
+                                await this.getMan(this.currentGameId, this.currentGameItemId, this
+                                    .crrrentGroupId)
+                            }
+                            this.isAllpoint = true
+                            this.windowIndent = this.currentGameId + this.currentGameItemId + this
+                                .crrrentGroupId
+
+                            this.getWebsocket()
+                        }
+                        $('.title').height(this.listHeight - 8)
+                        $('.title1').height(this.listHeight)
+                        $('ul li').height(this.listHeight)
+                        $('.allPointList,.pointList').height(this.ulHeight)
+                        // $('.allPointList,.pointList').css('max-height',this.ulHeight+'px')
+                    },
+                    getMan(competitionId, competitionItemId, groupId, relayNo) { //获取人员
+                        let that = this
+                        $.ajax({ //获取人员
+                            url: baseUrl + 'along/CrossSportsmanController/findListAndPostBack',
+                            type: 'POST',
+                            async: false,
+                            // contentType:'application/json;charset=UTF-8;',
+                            data: {
+                                competitionId: competitionId, //赛事id
+                                competitionItemId: competitionItemId, //赛项id
+                                groupId: groupId, //组别id
+                                // relayNo: relayNo
+                            },
+                            success(res) {
+                                console.log(res)
+                                if (res.status == 1) {
+                                    if(!that.isjieli){
+                                        that.manList = res.data
+                                        let pageNum = 0
+                                        that.manList.forEach((item, index) => { //人数
+                                            let glob_time = item.startTime
+                                            that.test = []
+                                            item.pointList = JSON.parse(JSON.stringify(that.poionList)) //所有的中间点
+                                            for (let i = 0; i < item.allPostBackList.length; i++) {
+                                                let allitem = item.allPostBackList[i]
+                                                if (item.pointList[item.pointList.length - 1].id == allitem.pointId) {
+                                                    let lastRecordtime = allitem.recordTime
+                                                    let startTime = item.startTime
+                                                    let userTime = new Date(lastRecordtime).getTime() - new Date(startTime).getTime()
+                                                    // item.sortTime = userTime*100000
+                                                    // pageNum++
+                                                    item.endpoint = true
+                                                    if(item.postBackList.length>0){         
+                                                        if(item.pointList[item.pointList.length - 1].id!=item.postBackList[item.postBackList.length - 1].pointId){
+                                                            //打了终点但无效
+                                                            item.istruth =true
+                                                        }
+                                                    }else{
+                                                        item.istruth =true
+                                                    }
+                                                }
+                                            }
+                                            if(item.postBackList.length==item.pointList.length-2){
+                                                item.sortTime = 10000000/item.postBackList[item.postBackList.length-1].timeDiff.replace(/[^0-9]/ig,"")*10000000000
+                                            }else{
+                                                item.sortTime = item.postBackList.length*100+item.allPostBackList.length
+                                            }
+                                            if(item.istruth){
+                                                item.sortTime = 1
+                                            }
+                                            if(item.allPostBackList.length>0){
+                                                pageNum++
+                                            }
+                                            let checkPoint = item.allPostBackList //人员打卡的点
+                                            let validpoint = item.postBackList
+                                            for (let i = 0; i < item.pointList.length; i++) { //循环所有的中间点
+                                                let testindex = 0
+                                                for (let j = 0; j < checkPoint.length; j++) { //循环所有已经打卡的点
+                                                    if (item.pointList[i].id == checkPoint[j].pointId) {
+                                                        that.test.push(j)
+                                                        let istest = false
+                                                        for(let i=0;i<validpoint.length;i++){
+                                                            if(validpoint[i].pointId==checkPoint[j].pointId){
+                                                                if(validpoint[i].timeDiff==checkPoint[j].timeDiff){
+                                                                    istest = true
+                                                                }
+                                                                testindex++
+                                                            }
+                                                        }
+                                                        if(testindex<=1||istest){
+                                                            item.pointList[i].recordTime = checkPoint[j].timeDiff
+                                                        }
+                                                        // if(testindex>1){//是有效的，不替换
+                                                        
+                                                        // }else{
+                                                        //     item.pointList[i].recordTime = checkPoint[j].timeDiff
+                                                        // }
+                                                    } else {
+                                                        //    break
+                                                    }
+                                                }
+                                            }
+                                        })
+                                        // console.log(pageNum)
+                                        if (Math.ceil(pageNum / 7) == 0) {
+                                            that.pageSize = 1
+                                        } else {
+                                            that.pageSize = Math.ceil(pageNum / 7)
+                                        }
+                                        if (that.pageSize >= 2) {
+                                            that.scrollEvent()
+                                        }
+                                        that.manList.sort(that.compare('sortTime'))
+                                        // console.log(that.manList)
+                                    }else{//接力赛
+                                        let data = res.data
+                                        let pageNum = 0
+                                        that.jielidata = {}
+                                        for(let i=0;i<data.length;i++){
+                                            let item = data[i]
+                                            let ispause = false
+                                            let endposttime
+                                            item.pointList = JSON.parse(JSON.stringify(that.poionList)) //所有的中间点
+                                            for (let i = 0; i < item.allPostBackList.length; i++) {
+                                                let allitem = item.allPostBackList[i]
+                                                if (item.pointList[item.pointList.length - 1].id == allitem.pointId) {
+                                                    // pageNum++
+                                                    item.endpoint = true
+                                                    if(item.relayNo==3){
+                                                        ispause = true
+                                                        endposttime = allitem.recordTime
+                                                    }
+                                                    if(item.postBackList.length>0){
+                                                        if(item.pointList[item.pointList.length - 1].id!=item.postBackList[item.postBackList.length - 1].pointId){
+                                                            //打了终点但无效
+                                                            item.istruth =true
+                                                        }
+                                                    }else{
+                                                        item.istruth =true
+                                                    }
+                                                }
+                                            }
+                                            let checkPoint = item.allPostBackList //人员打卡的点
+                                            let validpoint = item.postBackList
+                                            for (let i = 0; i < item.pointList.length; i++) { //循环所有的中间点
+                                                let testindex = 0
+                                                for (let j = 0; j < checkPoint.length; j++) { //循环所有已经打卡的点
+                                                    if (item.pointList[i].id == checkPoint[j].pointId) {
+                                                        that.test.push(j)
+                                                        let istest = false
+                                                        for(let i=0;i<validpoint.length;i++){
+                                                            if(validpoint[i].pointId==checkPoint[j].pointId){
+                                                                if(validpoint[i].timeDiff==checkPoint[j].timeDiff){
+                                                                    istest = true
+                                                                }
+                                                                testindex++
+                                                            }
+                                                        }
+                                                        if(testindex<=1||istest){
+                                                            item.pointList[i].recordTime = checkPoint[j].timeDiff
+                                                        }
+                                                        // if(testindex>1){//是有效的，不替换
+                                                        
+                                                        // }else{
+                                                        //     item.pointList[i].recordTime = checkPoint[j].timeDiff
+                                                        // }
+                                                    } else {
+                                                        //    break
+                                                    }
+                                                }
+                                            }
+                                            if(that.jielidata[item.nationality+item.relayTeamNo]){
+                                                that.jielidata[item.nationality+item.relayTeamNo]['manlist'].push(item)
+                                                if(item.relayNo==1){//第一棒
+                                                    that.jielidata[item.nationality+item.relayTeamNo]['startTime'] = item.startTime
+                                                }
+                                                if(item.relayNo==3){//第三棒
+                                                    that.jielidata[item.nationality+item.relayTeamNo]['endTimePoint'] = item.allPostBackList
+                                                    that.jielidata[item.nationality+item.relayTeamNo]['ispause']=ispause
+                                                    if(ispause){
+                                                        that.jielidata[item.nationality+item.relayTeamNo]['currenttime'] = endposttime
+                                                    }
+                                                }
+                                                if(item.istruth){
+                                                    that.jielidata[item.nationality+item.relayTeamNo]['istruth']=true
+                                                }
+                                                // that.jielidata[item.nationality+item.relayTeamNo]['comparetime'] = that.jielidata[item.nationality+item.relayTeamNo]['comparetime'] + item.allPostBackList.length
+                                            }else{                                                
+                                                that.jielidata[item.nationality+item.relayTeamNo]={}
+                                                that.jielidata[item.nationality+item.relayTeamNo]['manlist']=[]
+                                                that.jielidata[item.nationality+item.relayTeamNo]['manlist'].push(item)
+                                                that.jielidata[item.nationality+item.relayTeamNo]['country']=item.nationality
+                                                that.jielidata[item.nationality+item.relayTeamNo]['currenttime'] = new Date().getTime()
+                                                that.jielidata[item.nationality+item.relayTeamNo]['comparetime']=10000000
+                                                that.jielidata[item.nationality+item.relayTeamNo]['totaltime'] = that.getTimeDiff(new Date(),item.startTime)
+                                                // that.jielidata[item.nationality+item.relayTeamNo]['comparetime'] = item.allPostBackList.length
+                                                that.jielidata[item.nationality+item.relayTeamNo]['nationalFlagUrl']='http://120.79.142.200:82/'+item.nationalFlagUrl
+                                                if(item.relayNo==1){//第一棒
+                                                    that.jielidata[item.nationality+item.relayTeamNo]['startTime'] = new Date(item.startTime)
+                                                }
+                                                if(item.relayNo==3){//第三棒
+                                                    that.jielidata[item.nationality+item.relayTeamNo]['endTimePoint'] = item.allPostBackList
+                                                    that.jielidata[item.nationality+item.relayTeamNo]['ispause']=ispause
+                                                    if(ispause){
+                                                        that.jielidata[item.nationality+item.relayTeamNo]['currenttime'] = endposttime
+                                                    }
+                                                }
+                                                if(item.istruth){
+                                                    that.jielidata[item.nationality+item.relayTeamNo]['istruth']=true
+                                                }
+                                            }
+                                            if(item.allPostBackList.length>0){
+                                                pageNum++
+                                            }
+                                            
+                                        }
+                                        // console.log(pageNum)
+                                        if (Math.ceil(pageNum / 9) == 0) {
+                                            that.jielipagesize = 1
+                                        } else {
+                                            that.jielipagesize = Math.ceil(pageNum / 9)
+                                        }
+                                        if (that.jielipagesize >= 2) {
+                                            that.scrollEvent1()
+                                        }
+                                        for(let i in that.jielidata){
+                                            let item  = that.jielidata[i]
+                                            let allpost = item.manlist
+                                            let thecomparetime = 0
+                                            for(let j = 0;j<allpost.length;j++){
+                                                thecomparetime += allpost[j].allPostBackList.length
+                                            }
+                                            if(thecomparetime>0){
+                                                item.comparetime=thecomparetime
+                                            }
+                                        }
+                                        // console.log(that.jielidata)
+                                    }
+                                } else {
+                                    alert('网络连接错误，请稍后重试！')
+                                }
+                            }
+                        })
+                    },
+                    getWebsocket() {
+                        let that = this
+                        //webSocket处理
+                        var websocket = null;
+                        //判断当前浏览器是否支持WebSocket
+                        if ('WebSocket' in window) {
+                            var url = baseUrl.replace("http", "ws") + "websocket/" + this.windowIndent +""; //20为客户端窗口标识
+                            websocket = new WebSocket(url);
+                        } else {
+                            alert('Not support websocket')
+                        }
+
+                        //连接发生错误的回调方法
+                        websocket.onerror = function () {
+                            console.log("webSocket_Err")
+                        };
+
+                        //连接成功建立的回调方法
+                        websocket.onopen = function (event) {
+                            console.log("open")
+                        }
+                        websocket.onmessage = function (event) {
+                            // console.log(event)
+                            // console.log(JSON.parse(event.data))
+                            // that.currentMan = JSON.parse(event)
+                            let theData = JSON.parse(event.data)
+
+                            that.getOnePointHistory(that.currentGameId, that.currentGameItemId, that
+                                .crrrentGroupId, that.pointId)
+                            // that.getMan(that.currentGameId,that.currentGameItemId,that.crrrentGroupId)
+                            if (that.gameItemListId[that.gameName][that.gameItemName + 'type'] == 2) {
+                                that.isjieli = true
+                                that.getMan(that.currentGameId, that.currentGameItemId, that.crrrentGroupId,
+                                    that.relayNo)
+                            } else {
+                                that.isjieli = false
+                                that.getMan(that.currentGameId, that.currentGameItemId, that.crrrentGroupId)
+                            }
+                            let currentMan = {}
+                            let onePointCurrentMan = {}
+                            //全显示
+                            for (let i = 0; i < that.manList.length; i++) {
+                                let item = that.manList[i]
+                                //console.log(item)
+                                if (theData.sportsman.id == item.id) {
+                                    currentMan.name = item.name
+                                    currentMan.nationality = item.nationality
+                                    currentMan.pointList = item.pointList
+                                    currentMan.startTime = item.startTime
+                                }
+                            }
+                            if (that.currentManPointList.length >= 3) {
+                                that.currentManPointList.splice(0, 1)
+                            }
+                            that.currentManPointList.push(currentMan)
+                            // console.log(that.currentManPointList)
+                            //单点
+                            // this.pointId
+                            for (let i = 0; i < that.manList.length; i++) {
+                                let item = that.manList[i]
+                                if (theData.sportsman.id == item.id) {
+                                    onePointCurrentMan.name = item.name
+                                    onePointCurrentMan.nationality = item.nationality
+                                    onePointCurrentMan.no = item.no
+                                    for (let j = 0; j < item.pointList.length; j++) {
+                                        if (item.pointList[j].id == theData.pointBack.pointId) {
+                                            if (theData.pointBack.pointId == that.pointId) {
+                                                onePointCurrentMan.pointTime = item.pointList[j].recordTime
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            if (that.currentonePointList.length >= 3) {
+                                that.currentonePointList.splice(0, 1)
+                            }
+                            that.currentonePointList.push(onePointCurrentMan)
+                            $('.title1').height(that.listHeight)
+
+                        }
+                        //连接关闭的回调方法
+                        websocket.onclose = function () {
+                            //    console.log("close")
+                        }
+                        //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+                        window.onbeforeunload = function () {
+                            websocket.close();
+                        }
+
+                        //关闭连接
+                        function closeWebSocket() {
+                            websocket.close();
+                        }
+                    },
+                    formatDate(date) {
+                        if (date) {
+                            date = new Date(date);
+                            var y = date.getFullYear();
+                            var m = date.getMonth() + 1;
+                            var d = date.getDate();
+                            var h = date.getHours();
+                            var m1 = date.getMinutes();
+                            var s = date.getSeconds();
+                            m = m < 10 ? ("0" + m) : m;
+                            d = d < 10 ? ("0" + d) : d;
+                            h = h < 10 ? ("0" + h) : h;
+                            m1 = m1 < 10 ? ("0" + m1) : m1;
+                            s = s < 10 ? ("0" + s) : s;
+                            return y + "-" + m + "-" + d + " " + h + ":" + m1 + ":" + s;
+                        } else {
+                            return ''
+                        }
+                    },
+                    getOnePointHistory(competitionId, competitionItemId, groupId, pointId) { //获取单个点回传数据
+                        let that = this
+                        $.ajax({
+                            url: baseUrl +
+                                'along/CrossIntermediatePointBackDataController/findEntityList',
+                            type: 'POST',
+                            async: false,
+                            contentType: 'application/json;charset=UTF-8;',
+                            data: JSON.stringify({
+                                competitionId: competitionId,
+                                competitionItemId: competitionItemId,
+                                groupId: groupId,
+                                pointId: pointId,
+                            }),
+                            success(res) {
+                                // console.log(res)
+                                if (res.status == 1) {
+                                    // that.manList = res.data
+                                    that.onePointManlist = []
+                                    let testarr = []
+                                    let firstTime;
+                                    let datalength = res.data.length
+                                    if (Math.ceil(datalength / 7) == 0) {
+                                        that.pageSize = 1
+                                    } else {
+                                        that.pageSize = Math.ceil(datalength / 7)
+                                    }
+                                    if (that.pageSize == 2) {
+                                        that.scrollEvent()
+                                    }
+                                    for (let i = 0; i < res.data.length; i++) {
+                                        let item = res.data[i]
+                                        let theDiffTimeMath = new Date(item.recordTime).getTime() -
+                                            new Date(item.sportsman.startTime).getTime()
+                                        item.theDiffTimeMath = theDiffTimeMath
+                                        that.onePointManlist.push(item)
+                                    }
+                                    for (let i = 0; i < that.onePointManlist.length; i++) {
+                                        let item = that.onePointManlist[i]
+                                        let theDiffTimeMath = new Date(item.recordTime).getTime() -
+                                            new Date(item.sportsman.startTime).getTime()
+                                        if (i == 0) {
+                                            firstTime = item.timeDiff
+                                            item.theDiffTime = item.timeDiff
+                                        } else {
+                                            item.theDiffTime = that.getTimeDiff2(item.timeDiff,
+                                                firstTime)
+                                        }
+                                    }
+
+                                } else {
+                                    alert('网络连接错误，请稍后重试！')
+                                }
+                            }
+                        })
+                    },
+                    getTimeDiff(recordTime, golbTime) { //获取时间差
+                        var curr_time = new Date(recordTime).getTime();
+                        var first_time = new Date(golbTime).getTime();
+                        var diff = curr_time - first_time;
+                        //计算出小时数
+                        var leave1 = diff % (24 * 3600 * 1000) //计算天数后剩余的毫秒数
+                        var days = Math.floor(diff / (24 * 3600 * 1000));
+                        var hours = Math.floor(leave1 / (3600 * 1000))
+                        //计算相差分钟数
+                        var leave2 = leave1 % (3600 * 1000) //计算小时数后剩余的毫秒数
+                        var minutes = Math.floor(leave2 / (60 * 1000))
+                        //计算相差秒数
+                        var leave3 = leave2 % (60 * 1000) //计算分钟数后剩余的毫秒数
+                        var seconds = Math.round(leave3 / 1000)
+                        hours = hours >= 10 ? hours : "0" + hours;
+                        minutes = minutes >= 10 ? minutes : "0" + minutes;
+                        seconds = seconds >= 10 ? seconds : "0" + seconds;
+                        //赋值
+                        time =  hours + ":" + minutes + ":" + seconds;
+                        return time
+                    },
+                    getTimeDiff2(recordTime, golbTime) { //获取时间差
+                        let curr_timeArr = recordTime.split(':')
+                        let first_timeArr = golbTime.split(':')
+                        let curr_time = curr_timeArr[0] * 60 * 60 * 1000 + curr_timeArr[1] * 60000 +
+                            curr_timeArr[2] * 1000
+                        let first_time = first_timeArr[0] * 60 * 60 * 1000 + first_timeArr[1] * 60000 +
+                            first_timeArr[2] * 1000
+                        let diff = curr_time - first_time;
+                        var leave1 = diff % (24 * 3600 * 1000) //计算天数后剩余的毫秒数
+                        var days = Math.floor(diff / (24 * 3600 * 1000));
+                        var hours = Math.floor(leave1 / (3600 * 1000))
+                        //计算相差分钟数
+                        var leave2 = leave1 % (3600 * 1000) //计算小时数后剩余的毫秒数
+                        var minutes = Math.floor(leave2 / (60 * 1000))
+                        //计算相差秒数
+                        var leave3 = leave2 % (60 * 1000) //计算分钟数后剩余的毫秒数
+                        var seconds = Math.round(leave3 / 1000)
+                        hours = hours >= 10 ? hours : "0" + hours;
+                        minutes = minutes >= 10 ? minutes : "0" + minutes;
+                        seconds = seconds >= 10 ? seconds : "0" + seconds;
+                        //赋值
+                        time = "+" + hours + ":" + minutes + ":" + seconds;
+                        return time
+
+                    },
+                    fullScreen() {
+                        let that = this
+                        let timer;
+                        $(document).on('keydown', function (e) {
+                            var e = event || window.event || arguments.callee.caller.arguments[0];
+                            if (e && e.keyCode == 122) { //捕捉F11键盘动作
+                                e.preventDefault(); //阻止F11默认动作
+                                var el = document.documentElement;
+                                var rfs = el.requestFullScreen || el.webkitRequestFullScreen || el
+                                    .mozRequestFullScreen || el.msRequestFullScreen; //定义不同浏览器的全屏API
+                                //执行全屏
+                                if (typeof rfs != "undefined" && rfs) {
+                                    rfs.call(el);
+                                } else if (typeof window.ActiveXObject != "undefined") {
+                                    var wscript = new ActiveXObject("WScript.Shell");
+                                    if (wscript != null) {
+                                        wscript.SendKeys("{F11}");
+                                    }
+                                }
+                                //监听不同浏览器的全屏事件，并件执行相应的代码
+                                document.addEventListener("webkitfullscreenchange", function () { //
+                                    if (document.webkitIsFullScreen) { //全屏后要执行的代码
+                                        $('.header').css('display', 'none')
+                                        $('.cont_all').css('margin-top', '0')
+
+                                    } else { //退出全屏后执行的代码
+                                        $('.header').css('display', 'flex')
+                                        $('.cont_all').css('margin-top', '30px')
+                                        clearInterval(that.timer)
+                                        that.screenSize = 1
+                                        $('.allPointList ul').animate({
+                                            top: '-' + 0
+                                        }, 1, 'linear')
+                                        $('.onepointList ul').animate({
+                                            top: '-' + 0
+                                        }, 1, 'linear')
+                                    }
+                                }, false);
+
+                                document.addEventListener("fullscreenchange", function () {
+                                    if (document.fullscreen) { //全屏后执行的代码
+                                        $('.header').css('display', 'none')
+                                        $('.cont_all').css('margin-top', '0')
+                                    } else { //退出全屏后要执行的代码
+                                        $('.header').css('display', 'flex')
+                                        $('.cont_all').css('margin-top', '30px')
+                                        clearInterval(timer)
+                                        that.screenSize = 1
+                                        $('.allPointList ul').animate({
+                                            top: '-' + 0
+                                        }, 1, 'linear')
+                                        $('.onepointList ul').animate({
+                                            top: '-' + 0
+                                        }, 1, 'linear')
+                                    }
+                                }, false);
+
+                                document.addEventListener("mozfullscreenchange", function () {
+                                    if (document.mozFullScreen) { //全屏后要执行的代码
+                                        $('.header').css('display', 'none')
+                                        $('.cont_all').css('margin-top', '0')
+
+                                    } else { //退出全屏后要执行的代码
+                                        $('.header').css('display', 'flex')
+                                        $('.cont_all').css('margin-top', '30px')
+                                        clearInterval(timer)
+                                        that.screenSize = 1
+                                        $('.allPointList ul').animate({
+                                            top: '-' + 0
+                                        }, 1, 'linear')
+                                        $('.onepointList ul').animate({
+                                            top: '-' + 0
+                                        }, 1, 'linear')
+                                    }
+                                }, false);
+
+                                document.addEventListener("msfullscreenchange", function () {
+                                    if (document.msFullscreenElement) { //全屏后要执行的代码
+                                        $('.header').css('display', 'none')
+                                        $('.cont_all').css('margin-top', '0')
+
+                                    } else { //退出全屏后要执行的代码
+                                        $('.header').css('display', 'flex')
+                                        $('.cont_all').css('margin-top', '30px')
+                                        clearInterval(timer)
+                                        that.screenSize = 1
+                                        $('.allPointList ul').animate({
+                                            top: '-' + 0
+                                        }, 1, 'linear')
+                                        $('.onepointList ul').animate({
+                                            top: '-' + 0
+                                        }, 1, 'linear')
+                                    }
+                                }, false)
+                            }
+                        })
+
+                    },
+                    compare(property) {
+                        return function (a, b) {
+                            var value1 = a[property];
+                            var value2 = b[property];
+                            return value2 - value1;
+                        }
+                    },
+                    compare1(property) {
+                        return function (a, b) {
+                            var value1 = a[property];
+                            var value2 = b[property];
+                            return value1 - value2;
+                        }
+                    },
+                    scrollEvent() {
+                        let that = this
+                        clearInterval(that.timer)
+                        if (that.pageSize > 1) {
+                            //滚动
+                            that.timer = setInterval(function () {
+                                that.screenSize++
+                                if (that.screenSize > that.pageSize) {
+                                    //滚回来
+                                    $('.allPointList .allpointlistul').animate({
+                                        top: '-' + 0
+                                    }, 2000, 'linear')
+                                    $('.onepointList ul').animate({
+                                        top: '-' + 0
+                                    }, 2000, 'linear')
+                                    that.screenSize = 1
+                                } else {
+                                    $('.allPointList .allpointlistul').animate({
+                                        top: '-' + that.newheight * (that.screenSize - 1)
+                                    }, 2000, 'linear')
+                                    $('.onepointList ul').animate({
+                                        top: '-' + that.newheight * (that.screenSize - 1)
+                                    }, 2000, 'linear')
+                                }
+                            }, 15000)
+                        }
+                        
+                    },
+                    scrollEvent1() {
+                        let that = this
+                        clearInterval(that.timer)
+                        if (that.jielipagesize > 1) {
+                            //滚动
+                            that.timer = setInterval(function () {
+                                that.screenSize1++
+                                if (that.screenSize1 > that.jielipagesize) {
+                                    //滚回来
+                                   
+                                    $('.allPointList .newallpointlistul').animate({
+                                        top: '-' + 0
+                                    }, 2000, 'linear')
+                                    
+                                    that.screenSize1 = 1
+                                } else {
+                                    console.log(that.jielinewheight)
+                                    $('.allPointList .newallpointlistul').animate({
+                                        top: '-' + that.jielinewheight * (that.screenSize1 - 1)
+                                    }, 2000, 'linear')
+                                }
+                            }, 15000)
+                        }
+                    },
+                    
+                },
+            });
+
+            $('.upRout').off().on('click', function () {
+                $('.header').css('display', 'none')
+                $('.cont_all').css('margin-top', '0')
+            })
+        </script>
+    </body>
+
+</html>

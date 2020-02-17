@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>槽位确认</title>
+    <link rel="stylesheet" href="common.css">
+</head>
+<style>
+    *{
+        margin: 0;
+        padding: 0
+    }
+    html,body{
+        width: 100%;
+        height: 100%;
+    }
+    .box{
+        min-width: 100%;
+        min-height: 100%;
+        background: url('./img/bgc.png') no-repeat center center;
+        background-size: 100% 100%;
+        overflow-y: auto;
+        padding-bottom: 30px
+    }
+    .container{
+        width: 700px;
+        margin: 0 auto;
+        margin-top: 40px;
+        padding: 40px;
+        background-color: #fff;
+    }
+    .title{
+        border-bottom: 1px solid #DDD;
+        color: #387EE8;
+        padding-bottom: 20px;
+        text-align: center;
+        font-size: 16px;
+        margin-bottom: 15px
+    }
+    .groupName{
+        color: #EC7B02;
+        font-weight: bold;
+        margin-bottom: 5px
+    }
+    .manList{
+        border: 1px solid #ddd;
+        border-top: none;
+    }
+    .manList>li{
+        display: flex;
+        justify-content: space-between;
+        border-top: 1px solid #ddd;
+        height: 30px;
+    }
+    .listTitle{
+        background-color: #E3EEFF;
+        font-weight: 800
+    }
+    .manList>li>p:nth-child(1){
+        flex: 3;
+        padding-left: 30px;
+        border-right: 1px solid #ddd;
+        line-height: 30px
+    }
+    .manList>li>p:nth-child(2),ul>li>div:nth-child(2){
+        width: 130px;
+        text-align: center
+    }
+    .slotBox{
+        position: relative;
+    }
+    .slotBox .slotBoxShow{
+        position: relative;
+        text-align: center;
+        height: 100%;
+        line-height: 30px;
+        color: #C72323;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .slotBox .slotBoxShow img{
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        right: 6px;
+        top: 6px
+    }
+    .showList{
+        position: absolute;
+        top: 30px;
+        left: -1px;
+        width: 132px;
+        /* display: none; */
+        z-index: 100;
+        background-color: #EEEEEE;
+        transition: all 1s;
+    }
+    .showList>li{
+        width: 100%;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        cursor: pointer;
+    }
+    .showList>li:hover{
+        background-color: #387EE8;
+        color: #fff
+    }
+    .game,.gameItem{
+        font-weight: bold;
+        margin-top: 8px
+    }
+    .groupList{
+        margin-top: 15px
+    }
+    .commit{
+        width: 90px;
+        height: 35px;
+        text-align: center;
+        line-height: 35px;
+        margin: 0 auto;
+        /* margin-top: 30px; */
+        border-radius: 3px;
+        background-color: #387EE8;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    [v-cloak] {
+        display: none;
+    }
+    .shadow{
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.3);
+        display: none
+    }
+    .successModel{
+        width: 500px;
+        height: 250px;
+        overflow: hidden;
+        background-color: #fff;
+        margin: 0 auto;
+        margin-top: 130px;
+        text-align: center;
+        font-size: 20px;
+        position: relative;
+    }
+    .successModel .successIcon{
+        margin: 0 auto;
+        margin-top: 50px;
+    }
+    .successModel p{
+        padding-left: 18px
+    }
+    .closeIcon{
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        width: 24px;
+        cursor: pointer;
+    }
+    .groupListBox{
+        margin-bottom: 30px
+    }
+</style>
+<body>
+    <div class="box" id="app" @click="hiddSelect">
+        <div class="container">
+            <div class="title">槽位确认表</div>
+            <p class="game" v-cloak>{{nationality}}</p>
+            <p class="gameItem" v-cloak>{{gameitemname}}</p>
+            <div v-if="isjl" class="groupListBox">
+                <div class="groupList" v-for="(item,index) in groups" :key="index">
+                    <p class="groupName" v-cloak>{{item.groupName}}</p>
+                    <ul class="manList">
+                        <li class="listTitle">
+                            <p class="setPadding">姓名</p>
+                            <p class="slotModel">槽位</p>
+                        </li>
+                        <li class="manItem" v-for="(manitem,manindex) in item.sportsmanList" :key="manindex">
+                            <p  class="setPadding" v-cloak>{{manitem.name}}</p>
+                            <div class="slotBox slotModel">
+                                <div class="slotBoxShow" @click.stop="isClick&&showSlotSelect(index,manindex)">
+                                    <span v-cloak v-show="!manitem.delStatus">{{manitem.teamNo}}-{{manitem.relayNo}}</span>
+                                    <span v-cloak v-show="manitem.delStatus">弃赛</span>
+                                    <img v-show="showarrow" src="./img/down.png" alt="">
+                                </div>
+                                <ul class="showList" v-show="groupIndex == index && manIndex == manindex">
+                                    <li v-cloak @click="selectSlotSg(index,manindex,slotitem.sgId,slotitem.teamNo,slotitem.relayNo,slotitem.snId,manitem.sgId,manitem.teamNo,manitem.relayNo,manitem.snId,slotitem.delStatus)" v-for="(slotitem,slotindex) in item.groupList"  :key="slotindex">{{slotitem.name}}</li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div v-else class="groupListBox">
+                <div class="groupList" v-for="(item,index) in groups" :key="index">
+                    <p class="groupName" v-cloak>{{item.groupName}}</p>
+                    <ul class="manList">
+                        <li class="listTitle">
+                            <p class="setPadding">姓名</p>
+                            <p class="slotModel">槽位</p>
+                        </li>
+                        <li class="manItem" v-for="(manitem,manindex) in item.sportsmanList" :key="manindex">
+                            <p  class="setPadding" v-cloak>{{manitem.name}}</p>
+                            <div class="slotBox slotModel">
+                                <div class="slotBoxShow" @click.stop="isClick&&showSlotSelect(index,manindex)">
+                                    <span v-cloak>{{manitem.positionName}}</span>
+                                    <img v-show="showarrow" src="./img/down.png" alt="">
+                                </div>
+                                <ul class="showList" v-show="groupIndex == index && manIndex == manindex">
+                                    <li v-cloak @click="selectSlot(index,manindex,slotitem.id,slotitem.name,manitem.positionId,manitem.positionName,slotitem.delStatus)" v-for="(slotitem,slotindex) in item.positionList"  :key="slotindex">{{slotitem.name}}</li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div v-show="showCommit" class="commit" @click="commitBtn">提交</div>
+        </div>
+    </div>
+    <div class="shadow">
+        <div class="successModel">
+            <img class="closeIcon" src="./img/close.png" alt="">
+            <img class="successIcon" src="./img/success.png" alt="">
+            <p>提交成功！</p>
+        </div>
+    </div>
+    <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        var os = function() {  
+            var ua = navigator.userAgent,  
+            isWindowsPhone = /(?:Windows Phone)/.test(ua),  
+            isSymbian = /(?:SymbianOS)/.test(ua) || isWindowsPhone,   
+            isAndroid = /(?:Android)/.test(ua),   
+            isFireFox = /(?:Firefox)/.test(ua),   
+            isChrome = /(?:Chrome|CriOS)/.test(ua),  
+            isTablet = /(?:iPad|PlayBook)/.test(ua) || (isAndroid && !/(?:Mobile)/.test(ua)) || (isFireFox && /(?:Tablet)/.test(ua)),  
+            isPhone = /(?:iPhone)/.test(ua) && !isTablet,  
+            isPc = !isPhone && !isAndroid && !isSymbian;  
+            return {  
+                isTablet: isTablet,  
+                isPhone: isPhone,  
+                isAndroid : isAndroid,  
+                isPc : isPc  
+            };  
+        }();
+        if(os.isAndroid || os.isPhone){
+            $('.slotModel').css('width','90px')
+            $('.container').css('width','90%')
+            $('.showList').css('width','92px')
+            $('.box').css('font-size','12px')
+            $('.setPadding').css('padding-left','10px')
+            $('.container').css('padding','15px')
+        }else{
+            $('.slotModel').css('width','130px')
+            $('.container').css('width','700px')
+            $('.showList').css('width','132px')
+            $('.box').css('font-size','14px')
+            $('.setPadding').css('padding-left','30px')
+            $('.container').css('padding','40px')
+        }
+        var baseUrl = "http://120.79.142.200:8080/";
+        let competitionId = getUrlParam('competitionId')
+        let competitionItemId = getUrlParam('competitionItemId')
+        let unitName = getUrlParam('unitName')
+        //获取槽位
+        function getSlot (){ 
+            return new Promise((resolve,reject)=>{
+                $.ajax({
+                    type:'POST',
+                    url:baseUrl + "along/CrossSportsmanController/findPositionList",
+                    data:JSON.stringify({
+                        competitionId:competitionId,
+                        competitionItemId:competitionItemId,
+                        unitName:unitName
+                    }),
+                    contentType:'application/json;charset=UTF-8;',
+                    success: function(res){
+                        resolve(res)
+                    },
+                    error:function(err){
+                        reject(err)
+                    }
+                })
+            })
+        }
+        
+        
+        var app = new Vue({
+            el: '#app',
+            data:{
+                groupIndex:100,
+                manIndex:100,
+                groups:[],
+                isClick:true,
+                showCommit:true,
+                showarrow:true,
+                isjl:false,
+                competitionItemId:'',
+                nationality:'',
+                gameitemname:''
+            },
+            mounted(){
+                this.getData()
+                let that = this
+                that.isClick = true
+                that.showCommit = true
+                that.showarrow = true
+                $('.closeIcon').off().on('click',function(){
+                    $('.shadow').css('display','none')
+                    that.isClick = false
+                    that.showCommit = false
+                    that.showarrow = false
+                })
+                that.competitionItemId = getUrlParam('competitionItemId')
+            },
+            methods:{
+                hiddSelect(){
+                    this.groupIndex = 100
+                    this.manIndex = 100
+                },
+                showSlotSelect(index,manindex){//展示槽位选择
+                    if(this.groupIndex == index&&this.manIndex == manindex){
+                        this.groupIndex = 100
+                        this.manIndex = 100
+                    }else{
+                        this.groupIndex = index
+                        this.manIndex = manindex
+                    }
+                },
+                getData(){//获取数据
+                    let that = this
+                    that.groups = []
+                    getSlot().then(res=>{
+                        console.log(res)
+                        // return
+                        if(res.status == 1){
+                            if(res.data[0].itemType!=2){
+                                for(let i = 0;i<res.data.length;i++){
+                                    let item = res.data[i]
+                                    this.gameitemname = item.itemName
+                                    this.nationality = item.nationality
+                                    item.sportsmanList.forEach(sportitem=>{
+                                        sportitem.delStatus = 0
+                                    })
+                                    item.positionList.push({
+                                        name:'弃赛',
+                                        delStatus:1
+                                    })
+                                }
+                                that.groups = res.data
+                                that.isjl = false
+                            }else{//团队赛
+                                that.isjl = true
+                                for(let i = 0;i<res.data.length;i++){
+                                    let group = res.data[i]
+                                    group.groupList = []
+                                    // nationality:'',
+                                    // gameitemname:''
+                                    this.gameitemname = group.itemName
+                                    this.nationality = group.nationality
+                                    for(let j = 0;j<group.sportsmanList.length;j++){
+                                        
+                                        let item = group.sportsmanList[j]
+                                        
+                                        group.groupList.push({
+                                            sgId:item.sgId,
+                                            teamNo:item.teamNo,
+                                            relayNo:item.relayNo,
+                                            name:item.teamNo+'-'+item.relayNo,
+                                            snId:item.snId
+                                        })
+                                        
+                                    }
+                                    group.groupList.push({
+                                        name:'弃赛',
+                                        delStatus:1
+                                    })
+                                    that.groups.push(group)
+                                }
+                            }
+                            console.log(that.groups)
+                        }else{
+                            alert(res.msg)
+                        }
+                    })
+                },
+                selectSlot(index,manindex,slotitemid,slotitemname,oldslotid,oldslotname,delStatus){//选择槽位
+                    //index 组别下标；选中的manindex 人员下标 ；slotitemid 选中的槽位id
+                    //oldslotid 当前槽位id  oldslotname当前槽位名字
+                    // console.log(index,manindex,slotitemid,slotitemname,oldslotid,oldslotname,delStatus)
+                    if(delStatus){//弃赛
+                        this.groups[index].sportsmanList[manindex].positionName = '弃赛'
+                        this.groups[index].sportsmanList[manindex].delStatus = delStatus
+                    }else{
+                        this.groups[index].sportsmanList[manindex].delStatus = delStatus
+                        this.groups[index].sportsmanList[manindex].positionId = slotitemid
+                        this.groups[index].sportsmanList[manindex].positionName = slotitemname
+                        let changelist = this.groups[index].sportsmanList
+                        for(let i = 0;i<changelist.length;i++){
+                            let item = changelist[i]
+                            if(i!=manindex){
+                                if(item.positionId == slotitemid && item.positionName==slotitemname){
+                                    item.positionId = oldslotid
+                                    item.positionName = oldslotname
+                                }
+                            }
+                        }
+                    }
+                },
+                selectSlotSg(index,manindex,sgId,teamNo,relayNo,snId,oldsgId,oldteamNo,oldrelayNo,oldsnId,delStatus){//获取槽位
+                    // console.log(index,manindex,sgId,teamNo,relayNo,snId,oldsgId,oldteamNo,oldrelayNo,oldsnId,delStatus)
+                    if(!delStatus){
+                        this.groups[index].sportsmanList[manindex].delStatus = 0
+                        this.groups[index].sportsmanList[manindex].sgId = sgId 
+                        this.groups[index].sportsmanList[manindex].teamNo = teamNo
+                        this.groups[index].sportsmanList[manindex].relayNo = relayNo
+                        this.groups[index].sportsmanList[manindex].snId = snId
+                        let changelist = this.groups[index].sportsmanList
+                        for(let i = 0;i<changelist.length;i++){
+                            let item = changelist[i]
+                            if(i!=manindex){
+                                if(item.sgId == sgId && item.teamNo==teamNo && item.relayNo==relayNo){
+                                    item.sgId = oldsgId
+                                    item.teamNo = oldteamNo
+                                    item.relayNo = oldrelayNo
+                                    item.snId = oldsnId
+                                }
+                            }
+                        }
+                    }else{
+                        this.groups[index].sportsmanList[manindex].delStatus = delStatus 
+                    }
+                },
+                commitBtn(){//提交
+                    let that = this
+                    let params = []
+                    let newParams = {}
+                    newParams.sportsmanGroup = []
+                    newParams.sportsmanNo = []
+                    let groups = this.groups
+                    if(that.isjl){//接力赛
+                        for(let i = 0;i<groups.length;i++){
+                            let group = groups[i]
+                            let mans = groups[i].sportsmanList
+                            for(let j = 0;j<mans.length;j++){
+                                let item = mans[j]
+                                if(item.delStatus != 1){
+                                    item.delStatus = 0
+                                }
+                                params.push({
+                                    id:item.sgId,
+                                    groupId:group.id,
+                                    sportsmanId:item.id,
+                                    competitionItemId:that.competitionItemId,
+                                    relayNo:item.relayNo,
+                                    relayTeamNo:item.teamNo,
+                                    delStatus:item.delStatus
+                                })
+                                
+                                newParams.sportsmanGroup.push({
+                                    id:item.sgId,
+                                    sportsmanId:item.id,
+                                    delStatus:item.delStatus
+                                })
+                                console.log(item.name+'--'+item.snId)
+                                newParams.sportsmanNo.push({
+                                    id:item.snId,
+                                    sportsmanId:item.id,
+                                    delStatus:item.delStatus
+                                })
+                            }
+                        }
+                        console.log(newParams)
+                        // return 
+                        $.ajax({
+                            type:'POST',
+                            url:baseUrl + "along/CrossSportsmanController/updateRelayNo",
+                            data:JSON.stringify(newParams),
+                            contentType:'application/json;charset=UTF-8;',
+                            success: function(res){
+                                console.log(res)
+                                if(res.status == 1){
+                                    $('.shadow').css('display','block')
+                                    setTimeout(function(){
+                                        $('.shadow').css('display','none')
+                                        that.isClick = false
+                                        that.showCommit = false
+                                        that.showarrow = false
+                                    },4000)
+                    
+                                }else{
+                                    alert(res.msg)
+                                }
+                            },
+                            error:function(err){
+                                console.log(err)
+                                alert('网络请求错误，请稍后重试！')
+                            }
+                        })
+
+                    }else{
+                        for(let i = 0;i<groups.length;i++){
+                            let mans = groups[i].sportsmanList
+                            for(let j = 0;j<mans.length;j++){
+                                let item = mans[j]
+                                params.push({
+                                    id:item.spId,
+                                    positionId:item.positionId,
+                                    sportsmanId:item.id,
+                                    // name:item.positionName,
+                                    // mansname:item.name,
+                                    delStatus:item.delStatus
+                                })
+                            }
+                        }
+                        // console.log(params)
+                        $.ajax({
+                            type:'POST',
+                            url:baseUrl + "along/CrossSportsmanController/updatePosition",
+                            data:JSON.stringify(params),
+                            contentType:'application/json;charset=UTF-8;',
+                            success: function(res){
+                                console.log(res)
+                                if(res.status == 1){
+                                    $('.shadow').css('display','block')
+                                    setTimeout(function(){
+                                        $('.shadow').css('display','none')
+                                        that.isClick = false
+                                        that.showCommit = false
+                                        that.showarrow = false
+                                    },4000)
+                    
+                                }else{
+                                    alert(res.msg)
+                                }
+                            },
+                            error:function(err){
+                                console.log(err)
+                                alert('网络请求错误，请稍后重试！')
+                            }
+                        })
+                   
+                   
+                    }
+                }
+            }
+        })
+       
+
+        function getUrlParam(name) {
+            var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);//search,查询？后面的参数，并匹配正则
+            // if(r!=null)return  unescape(r[2]); return null;
+            if(r!=null){
+                if(name == 'unitName'){
+                    return decodeURI(r[2])
+                }else{
+                    return  unescape(r[2])
+                }
+                return null
+            }
+        }
+        
+    </script>
+</body>
+</html>

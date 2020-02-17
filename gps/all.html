@@ -1,0 +1,204 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="content-type" content="no-cache, must-revalidate" />
+    <meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT"/>
+    <title>所有运动员</title>
+    <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css"/>
+    <style>
+        html, body, #container {
+            height: 100%;
+            width: 100%;
+        }
+        .input-card .btn{
+            margin-right: 1.2rem;
+            width: 9rem;
+        }
+
+        .input-card .btn:last-child{
+            margin-right: 0;
+        }
+		.amap-marker-label{
+            border: 0;
+            background-color: transparent;
+        }
+		.info{
+            position: relative;
+            top: 0;
+            right: 0;
+            min-width: 0;
+			padding: 4px;
+        }
+        .amap-logo,.amap-copyright{
+            display: none !important
+        }
+    </style>
+</head>
+<body>
+<div id="container"></div>
+
+<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=0f31751255b231fcd092f6431b136a83&plugin=AMap.GraspRoad"></script>
+<script src="https://webapi.amap.com/ui/1.0/main.js?v=1.0.11"></script>
+<script>
+    // var baseUrl = "http://120.77.175.26:8080/";
+    // var baseUrl = "http://www.showpro-sport.com:8081/"
+    var baseUrl = 'http://120.79.217.181:8088/'
+    //加载回传数据
+    let truthArr = [];
+	var imageLayer = new AMap.ImageLayer({
+        // url: 'http://amappc.cn-hangzhou.oss-pub.aliyun-inc.com/lbs/static/img/dongwuyuan.jpg',
+        url:'./all.jpg',
+        opacity:.8,
+        bounds: new AMap.Bounds(
+            //30.1407885889,114.4275297900
+            //30.1610736900,114.4588850944
+            [114.4275297900,30.1407885889],//西南角经纬度
+            [114.4588850944,30.1610736900]//东北角经纬度
+        ),
+        zooms: [3, 20]
+    });
+    var map = new AMap.Map("container", {
+        resizeEnable: true,
+        expandZoomRange:true,
+        //1509127922
+        center: [114.4431896227,30.1509127922],
+        zooms:[3,20],
+		zoom: 16,
+		layers: [
+            // new AMap.TileLayer(),//图片切层,取消则不显示地图
+            imageLayer,
+            // new AMap.TileLayer.Satellite()
+        ]
+    });
+    map.setFitView();
+    //webSocket处理
+    check()
+    var flag=true;
+    var socket = {};
+    socket.init=function(){
+    var websocket = null;
+
+    //判断当前浏览器是否支持WebSocket
+    if('WebSocket' in window){
+        // websocket = new WebSocket("ws://192.168.100.162:8080/websocket/52314");
+        //62518
+        var url=baseUrl.replace("http","ws")+"websocket?urlCode=f4302f51d437440cbc8ece27fa03fb54892d55fa21c34e81aa688d3777b5aa06";//20为客户端窗口标识
+        websocket = new WebSocket(url);
+    }
+    else{
+        alert('Not support websocket')
+    }
+
+    //连接发生错误的回调方法
+    websocket.onerror = function(){
+    };
+
+    //连接成功建立的回调方法
+    websocket.onopen = function(event){
+        flag=false;
+    }
+
+    //接收到消息的回调方法
+    let playerList = {};
+    playerList.playerId = []
+    var colorArr = [
+        "#0000ff",
+        "#fe0000",
+        "#008000",
+        "#800000",
+        "#000080",
+        "#ff0080",
+        "#ff8000",
+        "#0080ff",
+        "#7f00fd",
+        "#08bf08",
+        "red"
+    ]
+    //接收到消息的回调方法
+    websocket.onmessage = function(event){
+        // console.log(JSON.parse(event.data))
+        var data = JSON.parse(event.data);
+        if(data.crossGpsData.isLocation=='1'){
+            var id = data.id;//选手id
+            if(!playerList['arr'+data.id]){//创建轨迹数组
+                playerList['arr'+data.id] = []
+            }
+            // //转化为高德坐标
+            if(!playerList[data.id]){
+                playerList[data.id] = data.id
+                //第一次拿到选手数据
+                playerList.playerId.push(data.id)
+                let color
+                let indexArr = String(playerList.playerId.indexOf(data.id)).split('')
+                let theindex = indexArr[indexArr.length-1]
+                color = colorArr[theindex]
+                let datano='';
+                let groupname = ''
+                let name = ''
+                if(data.no){
+                    datano = data.no
+                }
+                if(data.groupName == 'Site'){
+                    name = data.name
+                    datano = ''
+                }else{
+                    groupname = data.groupName
+                }
+                playerList['marker'+data.id] = new AMap.Marker({
+                    map: map,
+                    position: [data.crossGpsData.longitude,data.crossGpsData.latitude],
+                    content:'<div style="display:inline-block;width:12px;height:12px;border-radius:50%;background:'+color+';border:2px solid #fff"></div>',
+                    offset: new AMap.Pixel(-7, -7),
+                    label:{
+                        offset: new AMap.Pixel(5, 5),  //设置文本标注偏移量
+                        direction:'right',
+                        content:'<div class="info" style="font-weight:900;text-shadow:-1px 0 white,0 1px white,1px 0 white,0 -1px white; position: relative;top: 0;right: 0;min-width: 0;background: transparent; border: none;box-shadow: none;padding: 0;color:'+color+'">'+
+                                    "<p>" +
+                                        groupname +
+                                    "</p>" +
+                                    "<p>" +
+                                    datano + name +
+                                    "</p>" +
+                                '</div>'
+                    },
+                });
+            }else{
+                playerList['marker'+data.id].setPosition([data.crossGpsData.longitude,data.crossGpsData.latitude])
+            }
+        }
+    }
+
+    //连接关闭的回调方法
+    websocket.onclose = function(){
+        flag=true;
+    }
+
+    //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+    window.onbeforeunload = function(){
+        websocket.close();
+    }
+
+   
+    //关闭连接
+    function closeWebSocket(){
+        websocket.close();
+    }
+   }
+
+ 
+
+    function check(){
+        if(flag){
+            map.clearMap();
+            socket.init();
+        }
+        setTimeout(function(){check()},1000);
+    }
+</script>
+</body>
+</html>
